@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Finance Journal</title>
+  <style>
+    :root {
+      --bg-color: #fafbf9;
+      --text-main: #1d2a23;
+      --text-muted: #5a655d;
+      --accent-green: #144933;
+      --border-light: #e0e4e0;
+      --font-serif: "Georgia", "Times New Roman", serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      padding: 3rem 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .title {
+      font-family: var(--font-serif);
+      font-size: 2.75rem;
+      line-height: 1.15;
+      color: var(--accent-green);
+      font-weight: 400;
+      margin-bottom: 1.75rem;
+    }
+
+    .title em {
+      font-style: italic;
+    }
+
+    .description {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+      margin-bottom: 3rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0.875rem 1.5rem;
+      border-radius: 9999px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+      cursor: pointer;
+      width: fit-content;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-green);
+      color: #ffffff;
+      border: 1px solid var(--accent-green);
+    }
+
+    .btn-primary .arrow {
+      margin-left: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-secondary:hover {
+      border-color: #b5beb8;
+    }
+
+    .hero-image {
+      width: 100%;
+      border-radius: 4px;
+      display: block;
+      object-fit: cover;
+      max-height: 300px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="subtitle">Vol. I &mdash; Personal Finance Journal</p>
+    <h1 class="title">Numbers you can <em>trust</em>, written like a ledger.</h1>
+  </header>
+
+  <main>
+    <p class="description">
+      Three deliberate calculators for the choices that actually move the needle &mdash; retirement corpus, loan interest, and the cost of building.
+    </p>
+
+    <div class="button-group">
+      <a href="#" class="btn btn-primary">
+        Start with PF <span class="arrow">&nearr;</span>
+      </a>
+      <a href="#" class="btn btn-secondary">
+        EMI Amortization
+      </a>
+      <a href="#" class="btn btn-secondary">
+        Cost of Building
+      </a>
+    </div>
+
+    <img 
+      src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1000&q=80" 
+      alt="Financial chart display" 
+      class="hero-image"
+    />
+  </main>
+
+</body>
+</html>
