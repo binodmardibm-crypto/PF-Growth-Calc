@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Journal & Toolkit</title>
+    <style>
+        :root {
+            --bg: #090d16;
+            --surface: #111827;
+            --card: #1f2937;
+            --border: #374151;
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.2);
+            --text: #f9fafb;
+            --muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 20px 14px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 720px;
+            width: 100%;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .tagline {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            scrollbar-width: none;
+        }
+        .tab-nav::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: #064e3b;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .calc-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            display: none;
+        }
+
+        .calc-card.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--muted);
+        }
+
+        .form-group input[type="number"], .form-group select {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+            margin-top: 6px;
+        }
+
+        .results-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 16px;
+        }
+
+        .res-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .res-row:last-child {
+            margin-bottom: 0;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 15px;
+        }
+Binod Mardi, [Aug 25, 2026 at 2:57 PM]
+.table-container {
+            margin-top: 16px;
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        th, td {
+            padding: 7px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--surface);
+            color: var(--muted);
+            position: sticky;
+            top: 0;
+            text-align: right;
+        }
+
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+
+        .btn-action {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 14px;
+            text-align: center;
+        }
+        .btn-action:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        @media print {
+            body { background: #fff; color: #000; }
+            .tab-nav, .btn-action { display: none; }
+            .calc-card { display: block !important; border: 1px solid #ccc; margin-bottom: 20px; page-break-inside: avoid; }
+            .results-box { background: #eee; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="tagline">Personal Finance Journal</div>
+        <h1>Finance & Assets Toolkit</h1>
+        <p class="subtitle">PF growth ledger, income tax comparison, loan amortization, gratuity & building metrics.</p>
+        
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="tab('pf', event)">PF Growth</button>
+            <button class="tab-btn" onclick="tab('tax', event)">Income Tax</button>
+            <button class="tab-btn" onclick="tab('emi', event)">Loan EMI</button>
+            <button class="tab-btn" onclick="tab('sip', event)">SIP Wealth</button>
+            <button class="tab-btn" onclick="tab('gratuity', event)">Gratuity</button>
+            <button class="tab-btn" onclick="tab('cost', event)">Building Cost</button>
+        </div>
+    </div>
+
+    <!-- PF GROWTH -->
+    <div id="pf" class="calc-card active">
+        <div class="form-group">
+            <label>Current PF Balance <span>₹<span id="txt-pf-cur">1,00,000</span></span></label>
+            <input type="number" id="pf-cur" value="100000" oninput="calcPF()">
+        </div>
+        <div class="form-group">
+            <label>Monthly Contribution (Initial) <span>₹<span id="txt-pf-m">5,000</span></span></label>
+            <input type="number" id="pf-m" value="5000" oninput="calcPF()">
+        </div>
+        <div class="form-group">
+            <label>Annual Contribution Step-Up (%) <span id="txt-pf-step">5%</span></label>
+            <input type="range" id="pf-step" min="0" max="20" value="5" oninput="calcPF()">
+        </div>
+        <div class="form-group">
+            <label>Interest Rate (%) <span>8.25%</span></label>
+            <input type="number" id="pf-r" value="8.25" step="0.05" oninput="calcPF()">
+        </div>
+        <div class="form-group">
+            <label>Duration (Years) <span id="txt-pf-y">15 Yrs</span></label>
+            <input type="range" id="pf-y" min="1" max="40" value="15" oninput="calcPF()">
+        </div>
+
+        <div class="results-box">
+            <div class="res-row"><span>Total Invested</span><span id="pf-out-invest">₹0</span></div>
+            <div class="res-row"><span>Interest Earned</span><span id="pf-out-interest">₹0</span></div>
+            <div class="res-row"><span>Total Maturity Corpus</span><span id="pf-out-total">₹0</span></div>
+        </div>
+Binod Mardi, [Aug 25, 2026 at 2:57 PM]
+<div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Year</th><th>Deposit (Yr)</th><th>Interest</th><th>Balance</th></tr>
+                </thead>
+                <tbody id="pf-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- INCOME TAX (OLD VS NEW) -->
+    <div id="tax" class="calc-card">
+        <div class="form-group">
+            <label>Annual Gross Salary (CTC/Taxable Base)</label>
+            <input type="number" id="tax-gross" value="800000" oninput="calcTax()">
+        </div>
+        <div class="form-group">
+            <label>Section 80C Deductions (PF/ELSS/LIC - Max 1.5L)</label>
+            <input type="number" id="tax-80c" value="150000" oninput="calcTax()">
+        </div>
+        <div class="form-group">
+            <label>Section 80D (Health Insurance)</label>
+            <input type="number" id="tax-80d" value="25000" oninput="calcTax()">
+        </div>
+        <div class="form-group">
+            <label>Home Loan Interest (Sec 24b - Max 2L)</label>
+            <input type="number" id="tax-24b" value="0" oninput="calcTax()">
+        </div>
+
+        <div class="results-box">
+            <div class="res-row"><span>New Regime Tax (Standard Ded: ₹75,000)</span><span id="tax-out-new">₹0</span></div>
+            <div class="res-row"><span>Old Regime Tax (Standard Ded: ₹50,000)</span><span id="tax-out-old">₹0</span></div>
+            <div class="res-row"><span>Recommendation</span><span id="tax-out-rec">-</span></div>
+        </div>
+    </div>
+
+    <!-- EMI -->
+    <div id="emi" class="calc-card">
+        <div class="form-group">
+            <label>Loan Principal <span>₹<span id="txt-emi-p">10,00,000</span></span></label>
+            <input type="number" id="emi-p" value="1000000" oninput="calcEMI()">
+        </div>
+        <div class="form-group">
+            <label>Interest Rate (%) <span>8.5%</span></label>
+            <input type="number" id="emi-r" value="8.5" step="0.1" oninput="calcEMI()">
+        </div>
+        <div class="form-group">
+            <label>Tenure (Years) <span id="txt-emi-y">10 Yrs</span></label>
+            <input type="range" id="emi-y" min="1" max="30" value="10" oninput="calcEMI()">
+        </div>
+
+        <div class="results-box">
+            <div class="res-row"><span>Monthly EMI</span><span id="emi-out-m">₹0</span></div>
+            <div class="res-row"><span>Total Interest Payable</span><span id="emi-out-interest">₹0</span></div>
+            <div class="res-row"><span>Total Repayment Amount</span><span id="emi-out-total">₹0</span></div>
+        </div>
+    </div>
+
+    <!-- SIP -->
+    <div id="sip" class="calc-card">
+        <div class="form-group">
+            <label>Monthly SIP Investment <span>₹<span id="txt-sip-m">5,000</span></span></label>
+            <input type="number" id="sip-m" value="5000" oninput="calcSIP()">
+        </div>
+        <div class="form-group">
+            <label>Expected Return Rate (% p.a.) <span>12%</span></label>
+            <input type="number" id="sip-r" value="12" step="0.5" oninput="calcSIP()">
+        </div>
+        <div class="form-group">
+            <label>Duration (Years) <span id="txt-sip-y">15 Yrs</span></label>
+            <input type="range" id="sip-y" min="1" max="35" value="15" oninput="calcSIP()">
+        </div>
+
+        <div class="results-box">
+            <div class="res-row"><span>Total Invested</span><span id="sip-out-invest">₹0</span></div>
+            <div class="res-row"><span>Estimated Wealth Gain</span><span id="sip-out-gain">₹0</span></div>
+            <div class="res-row"><span>Expected Maturity Value</span><span id="sip-out-total">₹0</span></div>
+        </div>
+    </div>
+
+    <!-- GRATUITY -->
+    <div id="gratuity" class="calc-card">
+        <div class="form-group">
+Binod Mardi, [Aug 25, 2026 at 2:57 PM]
+<label>Last Drawn Monthly Basic + DA</label>
+            <input type="number" id="grat-salary" value="35000" oninput="calcGratuity()">
+        </div>
+        <div class="form-group">
+            <label>Completed Years of Continuous Service</label>
+            <input type="number" id="grat-years" value="15" oninput="calcGratuity()">
+        </div>
+
+        <div class="results-box">
+            <div class="res-row"><span>Formula</span><span>(15 × Basic+DA × Yrs) / 26</span></div>
+            <div class="res-row"><span>Total Payable Gratuity</span><span id="grat-out-total">₹0</span></div>
+        </div>
+    </div>
+
+    <!-- BUILDING & WALL ESTIMATOR -->
+    <div id="cost" class="calc-card">
+        <div class="form-group">
+            <label>Calculation Type</label>
+            <select id="cost-type" onchange="toggleCostFields(); calcCost();">
+                <option value="house">House Built-up Area (Sq. Ft)</option>
+                <option value="wall">Boundary Wall (Running Ft)</option>
+            </select>
+        </div>
+        <div class="form-group" id="group-sqft">
+            <label>Built-up Area (Sq. Ft)</label>
+            <input type="number" id="b-sqft" value="1000" oninput="calcCost()">
+        </div>
+        <div class="form-group" id="group-rate">
+            <label>Rate per Sq. Ft (₹)</label>
+            <input type="number" id="b-rate" value="1500" oninput="calcCost()">
+        </div>
+        <div class="form-group" id="group-wall" style="display:none;">
+            <label>Wall Length (Running Ft) × Height (Ft)</label>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="w-len" value="40" placeholder="Length" oninput="calcCost()">
+                <input type="number" id="w-ht" value="6" placeholder="Height" oninput="calcCost()">
+            </div>
+        </div>
+
+        <div class="results-box">
+            <div class="res-row"><span>Material Breakdown (~60%)</span><span id="b-out-mat">₹0</span></div>
+            <div class="res-row"><span>Labour & Masonry (~40%)</span><span id="b-out-lab">₹0</span></div>
+            <div class="res-row"><span>Total Estimated Project Cost</span><span id="b-out-total">₹0</span></div>
+        </div>
+    </div>
+
+    <button class="btn-action" onclick="window.print()">🖨️ Print / Save PDF Summary</button>
+</div>
+
+<script>
+    function tab(id, e) {
+        document.querySelectorAll('.calc-card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        e.target.classList.add('active');
+    }
+
+    const fmt = v => "₹" + Math.round(v).toLocaleString('en-IN');
+
+    function calcPF() {
+        let cur = parseFloat(document.getElementById('pf-cur').value) || 0;
+        let m = parseFloat(document.getElementById('pf-m').value) || 0;
+        let step = (parseFloat(document.getElementById('pf-step').value) || 0) / 100;
+        let r = (parseFloat(document.getElementById('pf-r').value) || 0) / 100;
+        let y = parseInt(document.getElementById('pf-y').value) || 1;
+
+        document.getElementById('txt-pf-cur').innerText = cur.toLocaleString('en-IN');
+        document.getElementById('txt-pf-m').innerText = m.toLocaleString('en-IN');
+        document.getElementById('txt-pf-step').innerText = (step * 100) + "%";
+        document.getElementById('txt-pf-y').innerText = y + " Yrs";
+
+        let totalInvested = cur;
+        let balance = cur;
+        let currentMonthly = m;
+        let tableHtml = '';
+
+        for (let i = 1; i <= y; i++) {
+            let yearlyDeposit = currentMonthly * 12;
+            totalInvested += yearlyDeposit;
+            let interest = (balance + (yearlyDeposit / 2)) * r;
+            balance += yearlyDeposit + interest;
+
+            tableHtml += <tr>
+                <td>Yr ${i}</td>
+                <td>${fmt(yearlyDeposit)}</td>
+                <td>${fmt(interest)}</td>
+                <td>${fmt(balance)}</td>
+            </tr>;
+Binod Mardi, [Aug 25, 2026 at 2:57 PM]
+currentMonthly += currentMonthly * step;
+        }
+
+        document.getElementById('pf-out-invest').innerText = fmt(totalInvested);
+        document.getElementById('pf-out-interest').innerText = fmt(balance - totalInvested);
+        document.getElementById('pf-out-total').innerText = fmt(balance);
+        document.getElementById('pf-table-body').innerHTML = tableHtml;
+    }
+
+    function calcTax() {
+        let gross = parseFloat(document.getElementById('tax-gross').value) || 0;
+        let sec80c = Math.min(parseFloat(document.getElementById('tax-80c').value) || 0, 150000);
+        let sec80d = parseFloat(document.getElementById('tax-80d').value) || 0;
+        let sec24b = Math.min(parseFloat(document.getElementById('tax-24b').value) || 0, 200000);
+
+        let taxableNew = Math.max(0, gross - 75000);
+        let taxNew = 0;
+        if (taxableNew > 1500000) taxNew = 150000 + (taxableNew - 1500000) * 0.30;
+        else if (taxableNew > 1200000) taxNew = 90000 + (taxableNew - 1200000) * 0.20;
+        else if (taxableNew > 900000) taxNew = 45000 + (taxableNew - 900000) * 0.15;
+        else if (taxableNew > 600000) taxNew = 15000 + (taxableNew - 600000) * 0.10;
+        else if (taxableNew > 300000) taxNew = (taxableNew - 300000) * 0.05;
+        if (taxableNew <= 700000) taxNew = 0;
+
+        let taxableOld = Math.max(0, gross - 50000 - sec80c - sec80d - sec24b);
+        let taxOld = 0;
+        if (taxableOld > 1000000) taxOld = 112500 + (taxableOld - 1000000) * 0.30;
+        else if (taxableOld > 500000) taxOld = 12500 + (taxableOld - 500000) * 0.20;
+        else if (taxableOld > 250000) taxOld = (taxableOld - 250000) * 0.05;
+        if (taxableOld <= 500000) taxOld = 0;
+
+        taxNew += taxNew * 0.04;
+        taxOld += taxOld * 0.04;
+
+        document.getElementById('tax-out-new').innerText = fmt(taxNew);
+        document.getElementById('tax-out-old').innerText = fmt(taxOld);
+        document.getElementById('tax-out-rec').innerText = taxNew <= taxOld ? "New Regime Saves More ✅" : "Old Regime Saves More ✅";
+    }
+
+    function calcEMI() {
+        let p = parseFloat(document.getElementById('emi-p').value) || 0;
+        let r = ((parseFloat(document.getElementById('emi-r').value) || 0) / 12) / 100;
+        let y = parseInt(document.getElementById('emi-y').value) || 1;
+        let n = y * 12;
+
+        document.getElementById('txt-emi-p').innerText = p.toLocaleString('en-IN');
+        document.getElementById('txt-emi-y').innerText = y + " Yrs";
+
+        let emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        let total = emi * n;
+
+        document.getElementById('emi-out-m').innerText = fmt(emi);
+        document.getElementById('emi-out-interest').innerText = fmt(total - p);
+        document.getElementById('emi-out-total').innerText = fmt(total);
+    }
+
+    function calcSIP() {
+        let m = parseFloat(document.getElementById('sip-m').value) || 0;
+        let r = ((parseFloat(document.getElementById('sip-r').value) || 0) / 12) / 100;
+        let y = parseInt(document.getElementById('sip-y').value) || 1;
+        let n = y * 12;
+
+        document.getElementById('txt-sip-m').innerText = m.toLocaleString('en-IN');
+        document.getElementById('txt-sip-y').innerText = y + " Yrs";
+
+        let total = m * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+        let invested = m * n;
+
+        document.getElementById('sip-out-invest').innerText = fmt(invested);
+        document.getElementById('sip-out-gain').innerText = fmt(total - invested);
+        document.getElementById('sip-out-total').innerText = fmt(total);
+    }
+
+    function calcGratuity() {
+        let sal = parseFloat(document.getElementById('grat-salary').value) || 0;
+        let yrs = parseFloat(document.getElementById('grat-years').value) || 0;
+        let total = (15 * sal * yrs) / 26;
+        document.getElementById('grat-out-total').innerText = fmt(total);
+    }
+Binod Mardi, [Aug 25, 2026 at 2:57 PM]
+function toggleCostFields() {
+        let type = document.getElementById('cost-type').value;
+        document.getElementById('group-sqft').style.display = type === 'house' ? 'block' : 'none';
+        document.getElementById('group-rate').style.display = type === 'house' ? 'block' : 'none';
+        document.getElementById('group-wall').style.display = type === 'wall' ? 'block' : 'none';
+    }
+
+    function calcCost() {
+        let type = document.getElementById('cost-type').value;
+        let total = 0;
+
+        if (type === 'house') {
+            let sq = parseFloat(document.getElementById('b-sqft').value) || 0;
+            let rate = parseFloat(document.getElementById('b-rate').value) || 0;
+            total = sq * rate;
+        } else {
+            let len = parseFloat(document.getElementById('w-len').value) || 0;
+            let ht = parseFloat(document.getElementById('w-ht').value) || 0;
+            total = (len * ht) * 350;
+        }
+
+        document.getElementById('b-out-mat').innerText = fmt(total * 0.6);
+        document.getElementById('b-out-lab').innerText = fmt(total * 0.4);
+        document.getElementById('b-out-total').innerText = fmt(total);
+    }
+
+    calcPF();
+    calcTax();
+    calcEMI();
+    calcSIP();
+    calcGratuity();
+    calcCost();
+</script>
+</body>
+</html>
+
